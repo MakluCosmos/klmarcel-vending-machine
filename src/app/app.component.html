@@ -1,0 +1,52 @@
+<main class="main">
+  <div class="title-container"> <span class="led-title">{{title}}</span> </div>
+  <div class="content">
+    <div class="product-grid">
+      @for (item of productItems; track item.name) {
+        <div [ngClass]="selectedProduct()?.name === item.name ? 'product selected' : 'product'" (click)="selectVendingItem(item)"><img src="{{`./${item.name}.png`}}" alt="{{item.name}}"></div>
+      }
+    </div>
+      <div class="payment-section">
+        <div class="payment-kind">
+          <label  class="led-radio">
+            <input type="radio" name="option" 
+            [checked]="paymentKind() === 'cash'"
+            (change)="setPaymentKind('cash')">
+            <span class="led"></span>현금
+          </label>
+          <label class="led-radio">
+            <input type="radio" name="option" 
+            [checked]="paymentKind() === 'card'"
+            (change)="setPaymentKind('card')">
+            <span class="led"></span>카드
+          </label>
+        </div>
+        @if (paymentKind() === "cash") {
+          <div class="display-container">
+            <span class="label">현재금액</span>
+            <div class="display">₩{{currentAmount()}}</div>
+          </div>
+          <div class="keypad">
+            @for (item of keypadItems; track item.label) {
+            <button [ngClass]="item.label.toLowerCase()" (click)="item.func(item.value)">{{item.label}}</button>
+          }
+          </div>
+          <button class="pay-button" [disabled]="this.selectedProduct() === undefined" (click)="payByCash()">현금 결제</button>
+        }
+        @else if (paymentKind() === "card") {
+          <select id="card-providers" class="digital-select" name="card-providers" id="cars" [value]="selectedCardProvider()" (change)="setCardProvider($event)">
+            @for (option of cardOptions; track option.name) {
+              <option value="{{option.value}}">{{option.label}}</option>
+            }
+          </select>
+
+          <button class="pay-button" [disabled]="this.selectedProduct() === undefined" (click)="payByCard()">카드 결제</button>
+        }
+
+
+      </div>
+  </div>
+</main>
+
+
+<router-outlet />
